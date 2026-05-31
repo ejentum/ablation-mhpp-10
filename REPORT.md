@@ -1,6 +1,6 @@
 # Code Character as a Probe for Cognitive Scaffold Effects on Saturated Benchmarks
 
-**An MHPP-10 ablation using the Ejentum Reasoning Harness on Claude Opus 4.7**
+**An MHPP-10 ablation using the Ejentum Reasoning Harness on Claude Opus 4.8**
 
 Date: 2026-05-31
 Repo: https://github.com/ejentum/ablation-mhpp-10
@@ -10,7 +10,7 @@ Pre-registration commit: `851f37e5` (committed before solve agents ran)
 
 ## Abstract
 
-We ran a 3-condition ablation on the 10 hardest tasks of the MHPP coding benchmark using Claude Opus 4.7 as the solver. Conditions were: B (raw baseline, no scaffold), D (Ejentum dynamic-code harness, top-1 retrieval), A (Ejentum adaptive-code harness, top-5 retrieval plus task-adapted rewrite). The harness was called by each solve agent at the moment it received its task, not pre-generated, matching the production agentic-tool pattern. Pass rate was identical across all three conditions (9 of 10 per condition, with the single failed task confirmed as a test-authoring error, corrected pass rate 10/10/10). However, the code outputs themselves differed systematically. Adaptive-mode outputs contained 240 percent more comments, 100 percent more defensive guards, and exhibited consistent shifts in algorithmic class: sliding-window over brute-force, backward dynamic-programming over forward, closed-form derivation over iteration. We argue that pass-rate saturation on a top-tier model masks a real and measurable scaffold effect that lives in code character. We discuss four settings where this effect should translate into pass-rate lift: larger inputs, edge-case-heavy problem surfaces, code-review-driven workflows, and weaker model classes.
+We ran a 3-condition ablation on the 10 hardest tasks of the MHPP coding benchmark using Claude Opus 4.8 as the solver. Conditions were: B (raw baseline, no scaffold), D (Ejentum dynamic-code harness, top-1 retrieval), A (Ejentum adaptive-code harness, top-5 retrieval plus task-adapted rewrite). The harness was called by each solve agent at the moment it received its task, not pre-generated, matching the production agentic-tool pattern. Pass rate was identical across all three conditions (9 of 10 per condition, with the single failed task confirmed as a test-authoring error, corrected pass rate 10/10/10). However, the code outputs themselves differed systematically. Adaptive-mode outputs contained 240 percent more comments, 100 percent more defensive guards, and exhibited consistent shifts in algorithmic class: sliding-window over brute-force, backward dynamic-programming over forward, closed-form derivation over iteration. We argue that pass-rate saturation on a top-tier model masks a real and measurable scaffold effect that lives in code character. We discuss four settings where this effect should translate into pass-rate lift: larger inputs, edge-case-heavy problem surfaces, code-review-driven workflows, and weaker model classes.
 
 ---
 
@@ -42,7 +42,7 @@ The harness call was performed by each solve agent itself, not by a setup proces
 
 ### 2.3 Solver
 
-Claude Opus 4.7 was the solver in all 30 agents. We selected this model deliberately for its strong baseline on coding tasks: a saturated condition is precisely the regime where a pass-rate-only evaluation would conclude no effect.
+Claude Opus 4.8 was the solver in all 30 agents. We selected this model deliberately for its strong baseline on coding tasks: a saturated condition is precisely the regime where a pass-rate-only evaluation would conclude no effect.
 
 ### 2.4 Scoring
 
@@ -154,7 +154,7 @@ The two produce identical pass rates on a saturated benchmark with a strong mode
 
 3. **Code-review-driven workflows.** A's commented invariants make the code reviewable. The reviewer can verify the algorithm against the stated invariant. B's silent brute force forces the reviewer to re-derive the reasoning from scratch. In production engineering settings where code review is required, A's output is cheaper to ship.
 
-4. **Weaker model classes.** Opus 4.7 can pattern-match its way to correct on saturated MHPP. Smaller models (Haiku 4.5, gpt-4o-mini, open-weight models in the 7B to 13B range) cannot. For those models, the invariant-first scaffold should translate directly into pass-rate lift. The cleanest follow-up experiment is the same ablation against a weaker solver.
+4. **Weaker model classes.** Opus 4.8 can pattern-match its way to correct on saturated MHPP. Smaller models (Haiku 4.5, gpt-4o-mini, open-weight models in the 7B to 13B range) cannot. For those models, the invariant-first scaffold should translate directly into pass-rate lift. The cleanest follow-up experiment is the same ablation against a weaker solver.
 
 The honest interpretation of our null pass-rate result is therefore not "the harness does nothing." It is "the harness operates on a dimension the benchmark cannot measure when the solver is already saturated."
 
@@ -162,18 +162,18 @@ The honest interpretation of our null pass-rate result is therefore not "the har
 
 * **Single replicate per cell.** N = 1 per (task, condition) means the structural-metric deltas are descriptive, not inferential. A replication study with N = 5 to 10 per cell would let us bound variance.
 * **AI-authored test cases.** MHPP withholds canonicals, so the setup agent authored tests. We caught one error (mhpp_130) by re-reading; there may be others we did not catch. The remedy is to use a benchmark with sealed canonicals, or have a second independent agent author tests.
-* **Saturated solver.** Opus 4.7 saturates the benchmark in all three conditions. We cannot rule out the possibility that on a different difficulty surface the harness produces qualitatively different outputs that we did not observe here.
+* **Saturated solver.** Opus 4.8 saturates the benchmark in all three conditions. We cannot rule out the possibility that on a different difficulty surface the harness produces qualitatively different outputs that we did not observe here.
 * **Partial suppression engagement.** Only 9 of 20 D and A agents quoted a `Suppress:` signal in their reasoning text. We do not know whether the other 11 silently used the signal or ignored it. This is a measurement gap, not necessarily a product gap.
 * **Structural metrics are proxies.** Comment count and defensive-guard count are imperfect proxies for "engineered reasoning." A model could pad comments without reasoning, or reason without commenting. The qualitative case studies (Section 4) are the actual evidence; the metrics are the screening pass.
 
 ## 7. Conclusion
 
-A standard pass-rate-only evaluation of the Ejentum Reasoning Harness against Claude Opus 4.7 on the 10 hardest MHPP tasks produces a null result: 9/10 in all three conditions (10/10 after a test-authoring correction). Reading the code outputs themselves reveals a systematic and monotonic effect: the adaptive-mode harness produces code with measurably more invariant statements, defensive guards, and canonical-form algorithmic choices. We interpret this as the harness shifting solver behavior from ad-hoc-correct to engineered-correct, a dimension that pass-rate cannot probe on a saturated benchmark.
+A standard pass-rate-only evaluation of the Ejentum Reasoning Harness against Claude Opus 4.8 on the 10 hardest MHPP tasks produces a null result: 9/10 in all three conditions (10/10 after a test-authoring correction). Reading the code outputs themselves reveals a systematic and monotonic effect: the adaptive-mode harness produces code with measurably more invariant statements, defensive guards, and canonical-form algorithmic choices. We interpret this as the harness shifting solver behavior from ad-hoc-correct to engineered-correct, a dimension that pass-rate cannot probe on a saturated benchmark.
 
 The follow-up experiments are clear:
 
 1. Run the same ablation on a weaker solver (Haiku 4.5, gpt-4o-mini) where the engineered-versus-ad-hoc distinction should translate into pass-rate lift.
-2. Run on a harder benchmark (LiveCodeBench-Hard, SWE-bench-verified, CodeContests-Hard) where Opus 4.7 has measurable failure rate and headroom for the harness to operate in.
+2. Run on a harder benchmark (LiveCodeBench-Hard, SWE-bench-verified, CodeContests-Hard) where Opus 4.8 has measurable failure rate and headroom for the harness to operate in.
 3. Run with input-scaling: take the same MHPP solutions and stress them with inputs an order of magnitude larger than the docstring examples. Predict A > D > B on time-to-solution.
 4. Replicate at N = 5 to 10 per cell to bound structural-metric variance.
 
@@ -195,4 +195,4 @@ See `PRE_REGISTRATION.md` (committed before solve agents ran, SHA `851f37e5`). T
 
 ## Acknowledgments
 
-The Ejentum Reasoning Harness was queried via its production endpoint at `api.ejentum.com/harness/`. Solver model was `claude-opus-4-7`. Solve agents were dispatched via Claude Code's subagent fleet with a concurrency cap of 16. The complete experimental scaffolding (workflow script, pre-registration, agent transcripts, scoring code) is in the public repository.
+The Ejentum Reasoning Harness was queried via its production endpoint at `api.ejentum.com/harness/`. Solver model was `claude-opus-4-8`. Solve agents were dispatched via Claude Code's subagent fleet with a concurrency cap of 16. The complete experimental scaffolding (workflow script, pre-registration, agent transcripts, scoring code) is in the public repository.
